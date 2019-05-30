@@ -11,17 +11,19 @@ export default class CriarTarefas extends React.Component {
     title: "Lista de Tarefas"
   }
 
-  constructor(){
+  constructor() {
     super()
     this.state =  {
     	titulo: "",
     	descricao: "",
-    	status: false
+    	status: false,
+      errorTitulo: '',
+      errorDescricao: ''
     }
     this.user = fb.auth().currentUser;
   }
 
-  sucessoCadastro(){
+  sucessoCadastro() {
     Alert.alert(
       'Sucesso',
       'Tarefa cadastrada com sucesso',
@@ -32,7 +34,7 @@ export default class CriarTarefas extends React.Component {
     );
   }
 
-  addTarefa(){
+  addTarefa() {
     const {titulo, descricao, status} = this.state;
     const tarefa = {
     	titulo: titulo,
@@ -40,9 +42,12 @@ export default class CriarTarefas extends React.Component {
     	status: status
     };
 
-    (titulo && descricao) && 
-    (db.ref(`/users/${this.user.uid}/tarefas`)
-    	 .push(tarefa) && this.sucessoCadastro())
+    (titulo && descricao) ?
+      (db.ref(`/users/${this.user.uid}/tarefas`)
+      	 .push(tarefa) && this.sucessoCadastro())
+    :
+      (!titulo && this.setState({errorTitulo: "Campo obrigatório"})) ||
+      (!descricao && this.setState({errorDescricao: "Campo obrigatório"}));
   }
 
   render() {
@@ -56,7 +61,8 @@ export default class CriarTarefas extends React.Component {
 		          rows={"1"}
 		          placeholder="Informe o título da tarefa"
 		          fullWidth={true}
-		          onChangeText={ (titulo) => this.setState({ titulo })}
+              error={this.state.errorTitulo}
+		          onChangeText={ (titulo) => this.setState({ titulo, errorTitulo: '' })}
 	          />
 	        </View>
           <View style={styles.tarefa} >
@@ -65,7 +71,8 @@ export default class CriarTarefas extends React.Component {
 		          multiline={true}
 		          placeholder="Informe a tarefa"
 		          fullWidth={true}
-		          onChangeText={ (descricao) => this.setState({ descricao })}
+              error={this.state.errorDescricao}
+		          onChangeText={ (descricao) => this.setState({ descricao, errorDescricao: '' })}
           	/>
           </View>
           <View style={styles.checkBox} >

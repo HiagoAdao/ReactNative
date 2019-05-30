@@ -29,16 +29,40 @@ export default class Tarefa extends React.Component {
     	descricao: descricao,
     	status: status
     };
+
+    (titulo && descricao) && 
+    (db.ref(`/users/${this.user.uid}/tarefas/${this.state.id}`)
+    	 .set(tarefa) && this.sucessoAtualizacao());
+  }
+
+  excluirTarefa(){
+    const {titulo, descricao, status} = this.state;
+    const tarefa = {
+      titulo: titulo,
+      descricao: descricao,
+      status: status
+    };
     console.log(tarefa);
     (titulo && descricao) && 
     (db.ref(`/users/${this.user.uid}/tarefas/${this.state.id}`)
-    	 .set(tarefa) && this.sucesso());
+       .remove() && this.sucessoExclusao());
   }
 
-  sucesso(){
+  sucessoAtualizacao(){
     Alert.alert(
       'Sucesso',
       'Tarefa alterada com sucesso',
+      [
+        {text: 'Voltar para lista', onPress: () => this.props.navigation.navigate('ListaTarefas')},
+      ],
+      {cancelable: false},
+    );
+  }
+
+  sucessoExclusao(){
+    Alert.alert(
+      'Sucesso',
+      'Tarefa excluída com sucesso',
       [
         {text: 'Voltar para lista', onPress: () => this.props.navigation.navigate('ListaTarefas')},
       ],
@@ -89,13 +113,20 @@ export default class Tarefa extends React.Component {
 						  onPress={() => this.setState({status: !this.state.status})}
 						/>
           </View>
-          <View style={styles.buttonCadastrar} >
+          <View style={styles.buttonAtualizar} >
 	          <Button
 	            color="#fff"
 	            title="SALVAR"
 	            onPress={this.atualizaTarefa.bind(this)	}
 	          />
         	</View>
+          <View style={styles.buttonExcluir} >
+            <Button
+              color="#fff"
+              title="EXCLUIR"
+              onPress={this.excluirTarefa.bind(this)}
+            />
+          </View>
         </ScrollView>
 
       </View>
@@ -121,12 +152,20 @@ const styles = StyleSheet.create({
 		margin: 20,
   	marginTop: 10
   },
-  buttonCadastrar: {
+  buttonAtualizar: {
     marginTop: 15,
     marginRight: 60,
     marginLeft: 60,
     opacity: 0.8,
     backgroundColor: "#458B00",
+    borderRadius: 5
+  },
+  buttonExcluir: {
+    marginTop: 15,
+    marginRight: 60,
+    marginLeft: 60,
+    opacity: 0.8,
+    backgroundColor: "#e10036",
     borderRadius: 5
   }
 });

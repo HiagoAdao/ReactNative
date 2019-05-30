@@ -14,7 +14,9 @@ export default class Login extends React.Component {
     super();
     this.state = {
       email: '',
-      password: ''
+      password: '',
+      errorEmail: '',
+      errorSenha: ''
     };
   }
 
@@ -24,8 +26,8 @@ export default class Login extends React.Component {
 
   invalidUserOrPassword(){
     Alert.alert(
-      'Tente Novamente',
-      'Dados Inválidos',
+      'E-mail ou Senha incorretos',
+      '\nVerifique seus dados e tente novamente',
       [
         {text: 'OK'},
       ],
@@ -36,10 +38,13 @@ export default class Login extends React.Component {
   async validLogin(){
     const {email, password} = this.state;
 
-    fb.auth().signInWithEmailAndPassword(email, password)
-      .then(retorno => this.props.navigation.navigate('ListaTarefas'))
-      .catch(erro => this.invalidUserOrPassword())
-
+    (email && password) ?
+      fb.auth().signInWithEmailAndPassword(email, password)
+        .then(retorno => this.props.navigation.navigate('ListaTarefas'))
+        .catch(erro => this.invalidUserOrPassword())
+    :
+      (!email && this.setState({ errorEmail: "Campo obrigatório" })) ||
+      (!password && this.setState({ errorSenha: "Campo obrigatório" }));
   }
 
 
@@ -51,14 +56,16 @@ export default class Login extends React.Component {
             label='E-mail'
             placeholder='Digite seu e-mail'
             value={this.state.email}
-            onChangeText={ (email) => this.setState({ email })}
+            error={this.state.errorEmail}
+            onChangeText={ (email) => this.setState({ email, errorEmail: '' })}
           />
         </View>
         <View style={styles.input} >
           <PasswordInputText
             placeholder='Digite sua senha'
             value={this.state.password}
-            onChangeText={(password) => this.setState({password})}
+            error={this.state.errorSenha}
+            onChangeText={(password) => this.setState({ password, errorSenha: ''})}
           />
         </View>
         <View style={styles.buttonLogin} >

@@ -14,10 +14,11 @@ export default class SigIn extends React.Component {
     super();
     this.state = {
       email: '',
-      password: ''
+      password: '',
+      errorEmail: '',
+      errorSenha: ''
     }
-    dict_users = {}
-  }
+  };
 
   sucessoCadastro(){
     Alert.alert(
@@ -25,20 +26,37 @@ export default class SigIn extends React.Component {
       'Usuário e Senha cadastrados com sucesso',
       [
         {text: 'Voltar para Login', onPress: () => this.props.navigation.navigate('Login')},
+        {text: 'Permanecer na tela', onPress: () => this.setState({ email: '', password: '' , errorEmail: '', errorSenha: ''})},
       ],
       {cancelable: false},
     );
-  }
+  };
+
+  errorCadastro(mensagem){
+    Alert.alert(
+       `${mensagem}`,
+       '',
+      [
+        {text: 'Ok'},
+
+      ],
+      {cancelable: true},
+    );
+  };
 
   cadastraUser(){
     const {email, password} = this.state;
 
-    (email && password) && (
-      fb.auth().createUserWithEmailAndPassword(email, password)
-        .then(retorno => this.sucessoCadastro())
-        .catch(err => console.log(err))
-    )
-  }
+    (email && password) ?
+       fb.auth().createUserWithEmailAndPassword(email, password)
+          .then(retorno => this.sucessoCadastro())
+          .catch(message => {
+              this.errorCadastro(message);
+          })
+    :
+      (!email && this.setState({ errorEmail: "Campo obrigatório" })) ||
+      (!password && this.setState({ errorSenha: "Campo obrigatório" }));
+  };
 
 
   render() {
@@ -47,15 +65,18 @@ export default class SigIn extends React.Component {
         <View style={styles.input}>
           <TextField
             label='E-mail'
+            placeholder='Digite seu e-mail'
             value={this.state.email}
-            onChangeText={ (email) => this.setState({ email })}
+            error={this.state.errorEmail}
+            onChangeText={( email ) => this.setState({ email, errorEmail: '' })}
           />
         </View>
         <View style={styles.input} >
           <PasswordInputText
-            required
+            placeholder='Digite sua senha'
             value={this.state.password}
-            onChangeText={(password) => this.setState({password})}
+            error={this.state.errorSenha}
+            onChangeText={( password ) => this.setState({ password, errorSenha: '' })}
           />
         </View>
         <View style={styles.buttonCadastrar} >
@@ -67,8 +88,8 @@ export default class SigIn extends React.Component {
         </View>
       </View>
     );
-  }
-}
+  };
+};
 
 const styles = StyleSheet.create({
   container: {
