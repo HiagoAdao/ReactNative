@@ -25,7 +25,12 @@ export default class Sobre extends React.Component {
               <Text style={styles.dev} >RA: 1116194</Text>
               <Text style={styles.dev} >E-mail Imed: 1116194@imed.edu.br</Text>
               <Text style={styles.dev} >E-mail Pessoal: hiago@registro.rs</Text>
-              <Text style={styles.dev} >LinkedIn: </Text>
+              <Text style={styles.dev} >
+                LinkedIn: 
+                  <Text style={{...styles.link, color: 'blue'}} onPress={() => Linking.openURL("https://www.linkedin.com/in/hiago-ad%C3%A3o-m%C3%BCller-oliveira-b223b1161/")} >
+                    {' Hiago Adão Müller Oliveira'}
+                  </Text>
+              </Text>
             </View>
           </View>
         </ScrollView>
@@ -56,7 +61,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontFamily: 'Gill Sans'
   },
-  api: {
+  link: {
     margin: 10,
     textAlign: "justify",
     fontSize: 21,
@@ -65,5 +70,6 @@ const styles = StyleSheet.create({
   dev: {
     fontSize: 18,
     fontFamily: 'GillSans-BoldItalic',
+    margin: 3
   }
 });

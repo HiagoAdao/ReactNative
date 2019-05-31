@@ -24,7 +24,7 @@ export default class Login extends React.Component {
   }
 
   componentDidMount(){
-    
+    // buscar os dados das checkbox no banco e manipular o state
   }
 
   invalidUserOrPassword(){
@@ -39,7 +39,9 @@ export default class Login extends React.Component {
   }
 
   async validLogin(){
-    const {email, password} = this.state;
+    const { email, password, statusEmail, statusEmailSenha } = this.state;
+
+    // Validar o status das checkbox e salvar no banco em /user/lembre-me /user/manter-me-conectado
 
     (email && password) ?
       fb.auth().signInWithEmailAndPassword(email, password)
@@ -74,9 +76,9 @@ export default class Login extends React.Component {
           </View>
           <View style={styles.checkBox} >
             <CheckBox
-              containerStyle={{height: 45, borderColor: `${this.state.status ? 'green' : '#d3d3d3'}`, backgroundColor: '#fff', borderRadius: 10}}
+              containerStyle={{height: 45, borderColor: `${this.state.statusEmail ? 'blue' : '#d3d3d3'}`, backgroundColor: '#fff', borderRadius: 10}}
               center
-              title='Manter-me conectado'
+              title='Lembre-me'
               checkedIcon='dot-circle-o'
               uncheckedIcon='circle-o'
               checkedColor='blue'
@@ -86,7 +88,7 @@ export default class Login extends React.Component {
           </View>
           <View style={styles.checkBox} >
             <CheckBox
-              containerStyle={{height: 45, borderColor: `${this.state.status ? 'green' : '#d3d3d3'}`, backgroundColor: '#fff', borderRadius: 10}}
+              containerStyle={{height: 45, borderColor: `${this.state.statusEmailSenha ? 'blue' : '#d3d3d3'}`, backgroundColor: '#fff', borderRadius: 10}}
               center
               title='Manter-me conectado'
               checkedIcon='dot-circle-o'
