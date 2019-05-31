@@ -46,8 +46,8 @@ export default class CriarTarefas extends React.Component {
       (db.ref(`/users/${this.user.uid}/tarefas`)
       	 .push(tarefa) && this.sucessoCadastro())
     :
-      (!titulo && this.setState({errorTitulo: "Campo obrigatório"})) ||
-      (!descricao && this.setState({errorDescricao: "Campo obrigatório"}));
+      (!titulo && this.setState({errorTitulo: "CAMPO OBRIGATÓRIO"})) ||
+      (!descricao && this.setState({errorDescricao: "CAMPO OBRIGATÓRIO"}));
   }
 
   render() {
@@ -93,7 +93,13 @@ export default class CriarTarefas extends React.Component {
 	          />
         	</View>
         </ScrollView>
-
+        <View style={styles.buttonSobre} >
+          <Button
+            color="#fff"
+            title="Sobre"
+            onPress={() => this.props.navigation.navigate('Sobre')}
+          />
+        </View>
       </View>
     );
   }
@@ -123,6 +129,16 @@ const styles = StyleSheet.create({
     marginLeft: 60,
     opacity: 0.8,
     backgroundColor: "#458B00",
-    borderRadius: 5
+    borderRadius: 10
+  },
+  buttonSobre: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    marginTop: 10,
+    backgroundColor: "#A2CD5A",
+    margin: 4
   }
 });

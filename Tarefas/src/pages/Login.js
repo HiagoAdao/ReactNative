@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Button, Alert } from 'react-native';
+import { StyleSheet, View, Button, Alert, ScrollView } from 'react-native';
 import PasswordInputText from 'react-native-hide-show-password-input';
 import { TextField } from 'react-native-material-textfield';
 import { fb, db } from '../../utils/Firebase';
+import { CheckBox } from 'react-native-elements';
 
 export default class Login extends React.Component {
   
@@ -16,7 +17,9 @@ export default class Login extends React.Component {
       email: '',
       password: '',
       errorEmail: '',
-      errorSenha: ''
+      errorSenha: '',
+      statusEmail: false,
+      statusEmailSenha: false
     };
   }
 
@@ -43,44 +46,79 @@ export default class Login extends React.Component {
         .then(retorno => this.props.navigation.navigate('ListaTarefas'))
         .catch(erro => this.invalidUserOrPassword())
     :
-      (!email && this.setState({ errorEmail: "Campo obrigatório" })) ||
-      (!password && this.setState({ errorSenha: "Campo obrigatório" }));
+      (!email && this.setState({ errorEmail: "CAMPO OBRIGATÓRIO" })) ||
+      (!password && this.setState({ errorSenha: "CAMPO OBRIGATÓRIO" }));
   }
 
 
   render() {
     return (
       <View style={styles.container} >
-        <View style={styles.input}>
-          <TextField
-            label='E-mail'
-            placeholder='Digite seu e-mail'
-            value={this.state.email}
-            error={this.state.errorEmail}
-            onChangeText={ (email) => this.setState({ email, errorEmail: '' })}
-          />
-        </View>
-        <View style={styles.input} >
-          <PasswordInputText
-            placeholder='Digite sua senha'
-            value={this.state.password}
-            error={this.state.errorSenha}
-            onChangeText={(password) => this.setState({ password, errorSenha: ''})}
-          />
-        </View>
-        <View style={styles.buttonLogin} >
-          <Button
-            color="#fff"
-            title="LOGAR"
-            onPress={this.validLogin.bind(this)}
-          />
-        </View>
-        <View style={styles.buttonSigIn} >
-          <Button
-            color="#000"
-            title="CADASTRAR"
-            onPress={() => this.props.navigation.navigate('SigIn')}
-          />
+        <ScrollView>
+          <View style={styles.input}>
+            <TextField
+              label='E-mail'
+              placeholder='Digite seu e-mail'
+              value={this.state.email}
+              error={this.state.errorEmail}
+              onChangeText={ (email) => this.setState({ email, errorEmail: '' })}
+            />
+          </View>
+          <View style={styles.input} >
+            <PasswordInputText
+              placeholder='Digite sua senha'
+              value={this.state.password}
+              error={this.state.errorSenha}
+              onChangeText={(password) => this.setState({ password, errorSenha: ''})}
+            />
+          </View>
+          <View style={styles.checkBox} >
+            <CheckBox
+              containerStyle={{height: 45, borderColor: `${this.state.status ? 'green' : '#d3d3d3'}`, backgroundColor: '#fff', borderRadius: 10}}
+              center
+              title='Manter-me conectado'
+              checkedIcon='dot-circle-o'
+              uncheckedIcon='circle-o'
+              checkedColor='blue'
+              checked={this.state.statusEmail}
+              onPress={() => this.setState({statusEmail: !this.state.statusEmail})}
+            />
+          </View>
+          <View style={styles.checkBox} >
+            <CheckBox
+              containerStyle={{height: 45, borderColor: `${this.state.status ? 'green' : '#d3d3d3'}`, backgroundColor: '#fff', borderRadius: 10}}
+              center
+              title='Manter-me conectado'
+              checkedIcon='dot-circle-o'
+              uncheckedIcon='circle-o'
+              checkedColor='blue'
+              checked={this.state.statusEmailSenha}
+              onPress={() => this.setState({statusEmailSenha: !this.state.statusEmailSenha})}
+            />
+          </View>
+          <View style={styles.buttonLogin} >
+            <Button
+              color="#fff"
+              title="LOGAR"
+              onPress={this.validLogin.bind(this)}
+            />
+          </View>
+          <View style={styles.buttonSigIn} >
+            <Button
+              color="#000"
+              title="CADASTRAR"
+              onPress={() => this.props.navigation.navigate('SigIn')}
+            />
+          </View>
+        </ScrollView>
+        <View>
+          <View style={styles.buttonSobre} >
+            <Button
+              color="#fff"
+              title="Sobre"
+              onPress={() => this.props.navigation.navigate('Sobre')}
+            />
+          </View>
         </View>
       </View>
     );
@@ -114,7 +152,7 @@ const styles = StyleSheet.create({
     marginLeft: 50,
     opacity: 0.8,
     backgroundColor: "#458B00",
-    borderRadius: 5
+    borderRadius: 10
   },
   buttonSigIn: {
     marginTop: 15,
@@ -122,6 +160,20 @@ const styles = StyleSheet.create({
     marginLeft: 70,
     opacity: 0.8,
     backgroundColor: "#B3EE3A",
-    borderRadius: 5
+    borderRadius: 10
+  },
+  buttonSobre: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    marginTop: 10,
+    backgroundColor: "#A2CD5A",
+    margin: 4
+  },
+  checkBox: {
+    marginTop: 10,
+    justifyContent: "center"
   }
 });

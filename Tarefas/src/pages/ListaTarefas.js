@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View, ScrollView, Image, Text } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, ScrollView, Image, Text, Button } from 'react-native';
 import { fb, db } from '../../utils/Firebase';
 import { CheckBox } from 'react-native-elements';
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
@@ -33,15 +33,17 @@ export default class ListaTarefas extends React.Component {
           const titulo =  tarefasDb[tarefa].titulo;
           const descricao = tarefasDb[tarefa].descricao;
           const status =  tarefasDb[tarefa].status;
-          
           tarefas.push({
             id: idTarefa,
             titulo,
             descricao,
-            status
+            status,
+            statusColor: status ? "#00bd00" : "#E10036"
           })
         }
-        this.setState({tarefas})
+
+        
+        this.setState({ tarefas })
        }
     })
   }
@@ -68,7 +70,7 @@ export default class ListaTarefas extends React.Component {
           }
         })}
       >
-        <View style={styles.tarefas} >
+        <View style={{ ...styles.tarefas, borderColor: `${tarefa.statusColor}`}} >
           <View style={styles.conteinerCheck}>
             <CheckBox
               checkedColor='green'
@@ -101,16 +103,25 @@ export default class ListaTarefas extends React.Component {
               </View>
           }
         </ScrollView>
-        <TouchableOpacity
-          style={styles.button}
-          activeOpacity={0.7}
-          onPress={() => this.props.navigation.navigate('CriarTarefa')}
-        >
-          <Image
-            style={{width: 60, height: 60}}
-            source={require('../../assets/buttonadd.png')}
-          />
-        </TouchableOpacity>
+          <View>
+            <TouchableOpacity
+              style={styles.buttonAdicionar}
+              activeOpacity={0.7}
+              onPress={() => this.props.navigation.navigate('CriarTarefa')}
+            >
+              <Image
+                style={{width: 60, height: 60}}
+                source={require('../../assets/buttonadd.png')}
+              />
+            </TouchableOpacity>
+            <View style={styles.buttonSobre} >
+              <Button
+                color="#fff"
+                title="Sobre"
+                onPress={() => this.props.navigation.navigate('Sobre')}
+              />
+            </View>
+          </View>
       </View>
     );
   }
@@ -127,18 +138,20 @@ const styles = StyleSheet.create({
     borderRadius: 150/2,
     backgroundColor: '#00BCD4',
   },
-  button: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    margin: 15
-  },
-  tarefas: {
+  buttonAdicionar: {
     display: "flex",
     flexDirection: "row",
-    marginTop: 5,
-    margin: 10,
-    flex:1
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  tarefas: {
+     display: "flex",
+     flexDirection: "row",
+     marginTop: 5,
+     margin: 10,
+     flex: 1,
+     borderWidth: 1,
+     borderRadius: 10 
   },
   conteinerCheck:{
     display: "flex",
@@ -150,7 +163,7 @@ const styles = StyleSheet.create({
     textAlign:"left",
     display: "flex",
     flexDirection: "row",
-    flex:3,
+    flex: 3,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -158,6 +171,17 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    fontSize: 20,
     marginTop: 20
+  },
+  buttonSobre: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    marginTop: 10,
+    backgroundColor: "#A2CD5A",
+    margin: 4
   }
 });

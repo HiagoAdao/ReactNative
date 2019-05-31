@@ -4,6 +4,7 @@ import SigIn from './src/pages/SigIn';
 import ListaTarefas from './src/pages/ListaTarefas';
 import CriarTarefa from './src/pages/CriarTarefa';
 import Tarefa from './src/pages/Tarefa';
+import Sobre from './src/pages/Sobre';
 
 const AppNavigator= createStackNavigator(
   {
@@ -11,7 +12,8 @@ const AppNavigator= createStackNavigator(
     SigIn: SigIn,
     ListaTarefas: ListaTarefas,
     CriarTarefa: CriarTarefa,
-    Tarefa: Tarefa
+    Tarefa: Tarefa,
+    Sobre: Sobre
   }, {
     initialRouteName: 'Login',
     defaultNavigationOptions: {

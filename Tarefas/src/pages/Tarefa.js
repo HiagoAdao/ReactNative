@@ -17,7 +17,9 @@ export default class Tarefa extends React.Component {
       id: "",
     	titulo: "",
     	descricao: "",
-    	status: false
+    	status: false,
+      errorTitulo: '',
+      errorDescricao: ''
     }
     this.user = fb.auth().currentUser;
   }
@@ -31,8 +33,14 @@ export default class Tarefa extends React.Component {
     };
 
     (titulo && descricao) && 
-    (db.ref(`/users/${this.user.uid}/tarefas/${this.state.id}`)
-    	 .set(tarefa) && this.sucessoAtualizacao());
+    
+
+    (titulo && descricao) ?
+      (db.ref(`/users/${this.user.uid}/tarefas/${this.state.id}`)
+         .set(tarefa) && this.sucessoAtualizacao())
+    :
+      (!titulo && this.setState({errorTitulo: "CAMPO OBRIGATÓRIO"})) ||
+      (!descricao && this.setState({errorDescricao: "CAMPO OBRIGATÓRIO"}));
   }
 
   excluirTarefa(){
@@ -42,10 +50,9 @@ export default class Tarefa extends React.Component {
       descricao: descricao,
       status: status
     };
-    console.log(tarefa);
-    (titulo && descricao) && 
-    (db.ref(`/users/${this.user.uid}/tarefas/${this.state.id}`)
-       .remove() && this.sucessoExclusao());
+
+    (titulo && descricao) && (db.ref(`/users/${this.user.uid}/tarefas/${this.state.id}`)
+                                .remove() && this.sucessoExclusao())
   }
 
   sucessoAtualizacao(){
@@ -90,7 +97,8 @@ export default class Tarefa extends React.Component {
 		          placeholder="Informe o título da tarefa"
               value={this.state.titulo}
 		          fullWidth={true}
-		          onChangeText={ (titulo) => this.setState({ titulo })}
+              error={this.state.errorTitulo}
+		          onChangeText={ (titulo) => this.setState({ titulo, errorTitulo: '' })}
 	          />
 	        </View>
           <View style={styles.tarefa} >
@@ -100,12 +108,13 @@ export default class Tarefa extends React.Component {
 		          placeholder="Informe a tarefa"
               value={this.state.descricao}
 		          fullWidth={true}
-		          onChangeText={ (descricao) => this.setState({ descricao })}
+              error={this.state.errorDescricao}
+		          onChangeText={ (descricao) => this.setState({ descricao, errorDescricao: '' })}
           	/>
           </View>
           <View style={styles.checkBox} >
           	<CheckBox
-          		containerStyle={{ borderColor: `${this.state.status ? 'green' : '#d3d3d3'}`, backgroundColor: '#fff', borderRadius: 10}}
+          		containerStyle={{backgroundColor: '#fff', borderRadius: 10}}
 						  center
 						  title='Concluída'
 						  checkedColor='green'
@@ -128,7 +137,13 @@ export default class Tarefa extends React.Component {
             />
           </View>
         </ScrollView>
-
+        <View style={styles.buttonSobre} >
+          <Button
+            color="#fff"
+            title="Sobre"
+            onPress={() => this.props.navigation.navigate('Sobre')}
+          />
+        </View>
       </View>
     );
   }
@@ -158,14 +173,34 @@ const styles = StyleSheet.create({
     marginLeft: 60,
     opacity: 0.8,
     backgroundColor: "#458B00",
-    borderRadius: 5
+    borderRadius: 10
   },
   buttonExcluir: {
     marginTop: 15,
     marginRight: 60,
     marginLeft: 60,
     opacity: 0.8,
-    backgroundColor: "#e10036",
-    borderRadius: 5
+    backgroundColor: "#E10036",
+    borderRadius: 10
+  },
+  buttonSobre: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    marginTop: 10,
+    backgroundColor: "#A2CD5A",
+    margin: 4
+  },
+  buttonSobre: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    marginTop: 10,
+    backgroundColor: "#A2CD5A",
+    margin: 4
   }
 });
