@@ -2,12 +2,23 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, View, ScrollView, Image, Text, Button } from 'react-native';
 import { fb, db } from '../../utils/Firebase';
 import { CheckBox } from 'react-native-elements';
-import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 
 export default class ListaTarefas extends React.Component {
 
   static navigationOptions = {
-    title: "Lista de Tarefas"
+    title: "Lista de Tarefas",
+    headerRight: (
+      <View style={{marginRight: 5}} >
+        <Button
+          onPress={() => {
+            fb.auth().signOut();
+            this.props.navigation.navigate('Login');
+          }}
+          title="Logout"
+          color="#000"
+        />
+      </View>
+    ),
   }
   
   state =  {
@@ -97,7 +108,7 @@ export default class ListaTarefas extends React.Component {
               tarefasRow
             : 
               <View style={styles.semTarefa} >
-                <Text>
+                <Text style={{fontSize: 20}} >
                   Nenhuma tarefa cadastrada
                 </Text>
               </View>
@@ -171,7 +182,6 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    fontSize: 20,
     marginTop: 20
   },
   buttonSobre: {

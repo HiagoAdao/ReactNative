@@ -108,7 +108,6 @@ export default class Tarefa extends React.Component {
 		          placeholder="Informe a tarefa"
               value={this.state.descricao}
 		          fullWidth={true}
-              error={this.state.errorDescricao}
 		          onChangeText={ (descricao) => this.setState({ descricao, errorDescricao: '' })}
           	/>
           </View>

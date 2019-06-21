@@ -19,5 +19,8 @@
   "devDependencies": {
     "babel-preset-expo": "^5.0.0"
   },
+  "android": {
+    "package": "com.yourcompany.yourappname"
+  },
   "private": true
 }

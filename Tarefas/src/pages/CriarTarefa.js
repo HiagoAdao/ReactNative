@@ -71,7 +71,6 @@ export default class CriarTarefas extends React.Component {
 		          multiline={true}
 		          placeholder="Informe a tarefa"
 		          fullWidth={true}
-              error={this.state.errorDescricao}
 		          onChangeText={ (descricao) => this.setState({ descricao, errorDescricao: '' })}
           	/>
           </View>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Button, Alert, ScrollView } from 'react-native';
+import { StyleSheet, View, Button, Alert, ScrollView, ActivitIndicator, AsyncStorage } from 'react-native';
 import PasswordInputText from 'react-native-hide-show-password-input';
 import { TextField } from 'react-native-material-textfield';
 import { fb, db } from '../../utils/Firebase';
@@ -23,8 +23,18 @@ export default class Login extends React.Component {
     };
   }
 
-  componentDidMount(){
-    // buscar os dados das checkbox no banco e manipular o state
+  async componentDidMount(){
+    const email = await AsyncStorage.getItem('email');
+    const senha = await AsyncStorage.getItem('senha');
+
+    if (email && senha) {
+      this.setState({
+        email,
+        password: senha,
+        statusEmail: email ? true : false,
+        statusEmailSenha: senha ? true : false
+      })
+    }
   }
 
   invalidUserOrPassword(){
@@ -41,7 +51,13 @@ export default class Login extends React.Component {
   async validLogin(){
     const { email, password, statusEmail, statusEmailSenha } = this.state;
 
-    // Validar o status das checkbox e salvar no banco em /user/lembre-me /user/manter-me-conectado
+    if(statusEmail) {
+      (await AsyncStorage.setItem('email', this.state.email))
+    };
+    if(statusEmailSenha) {
+      await AsyncStorage.setItem('email', this.state.email) &&
+      await AsyncStorage.setItem('senha', this.state.senha)
+    };
 
     (email && password) ?
       fb.auth().signInWithEmailAndPassword(email, password)
@@ -71,31 +87,8 @@ export default class Login extends React.Component {
               placeholder='Digite sua senha'
               value={this.state.password}
               error={this.state.errorSenha}
-              onChangeText={(password) => this.setState({ password, errorSenha: ''})}
-            />
-          </View>
-          <View style={styles.checkBox} >
-            <CheckBox
-              containerStyle={{height: 45, borderColor: `${this.state.statusEmail ? 'blue' : '#d3d3d3'}`, backgroundColor: '#fff', borderRadius: 10}}
-              center
-              title='Lembre-me'
-              checkedIcon='dot-circle-o'
-              uncheckedIcon='circle-o'
-              checkedColor='blue'
-              checked={this.state.statusEmail}
-              onPress={() => this.setState({statusEmail: !this.state.statusEmail})}
-            />
-          </View>
-          <View style={styles.checkBox} >
-            <CheckBox
-              containerStyle={{height: 45, borderColor: `${this.state.statusEmailSenha ? 'blue' : '#d3d3d3'}`, backgroundColor: '#fff', borderRadius: 10}}
-              center
-              title='Manter-me conectado'
-              checkedIcon='dot-circle-o'
-              uncheckedIcon='circle-o'
-              checkedColor='blue'
-              checked={this.state.statusEmailSenha}
-              onPress={() => this.setState({statusEmailSenha: !this.state.statusEmailSenha})}
+              onChangeText={(password) => {
+                this.setState({ password, errorSenha: '' })}}
             />
           </View>
           <View style={styles.buttonLogin} >
@@ -104,6 +97,32 @@ export default class Login extends React.Component {
               title="LOGAR"
               onPress={this.validLogin.bind(this)}
             />
+          </View>
+          <View style={styles.checkBoxForm}> 
+            <View style={styles.checkBox} >
+              <CheckBox
+                containerStyle={{height: 45, borderColor: `${this.state.statusEmail ? 'blue' : '#d3d3d3'}`, backgroundColor: '#fff', borderRadius: 10}}
+                center
+                title='Lembre-me'
+                checkedIcon='dot-circle-o'
+                uncheckedIcon='circle-o'
+                checkedColor='blue'
+                checked={this.state.statusEmail}
+                onPress={async () => { this.setState({statusEmail: !this.state.statusEmail}); }}
+              />
+            </View>
+            <View style={styles.checkBox} >
+              <CheckBox
+                containerStyle={{height: 45, borderColor: `${this.state.statusEmailSenha ? 'blue' : '#d3d3d3'}`, backgroundColor: '#fff', borderRadius: 10}}
+                center
+                title='Manter-me conectado'
+                checkedIcon='dot-circle-o'
+                uncheckedIcon='circle-o'
+                checkedColor='blue'
+                checked={this.state.statusEmailSenha}
+                onPress={() => { this.setState({statusEmailSenha: !this.state.statusEmailSenha}); }}
+              />
+            </View>
           </View>
           <View style={styles.buttonSigIn} >
             <Button
@@ -138,11 +157,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginVertical: 5
   },
-  form: {
-    opacity: 0.5,
-    backgroundColor: "#d3d3d3",
-    borderRadius: 5
-  },
   campos: {
     margin: 15,
     borderWidth: 0.5,
@@ -174,8 +188,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#A2CD5A",
     margin: 4
   },
+  checkBoxForm:{
+    flexDirection: 'row'
+  },
   checkBox: {
-    marginTop: 10,
-    justifyContent: "center"
+    flex: 2,
+    marginTop: 15,
+    justifyContent: "center",
   }
 });
